@@ -1,0 +1,14 @@
+{
+  "name": "mws-restaurant-stage-1",
+  "version": "1.0.0",
+  "main": "index.html",
+  "repository": "https://github.com/Dabolus/mws-restaurant-stage-1.git",
+  "author": "Giorgio Garasto <mail@dabolus.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^4.19.0",
+    "eslint-config-udacity": "^2.0.2",
+    "eslint-plugin-import": "^2.9.0"
+  }
+}
