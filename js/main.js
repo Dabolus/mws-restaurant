@@ -31,10 +31,14 @@ fetchNeighborhoods = () => {
  */
 fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
-  neighborhoods.forEach(neighborhood => {
+  select.querySelector('option[value="all"]').setAttribute('aria-setsize', neighborhoods.length + 1);
+  neighborhoods.forEach((neighborhood, i) => {
     const option = document.createElement('option');
     option.innerHTML = neighborhood;
     option.value = neighborhood;
+    // Accessibility tags to make sure the screen reader knows the ComboBox elements number and position
+    option.setAttribute('aria-posinset', i + 2);
+    option.setAttribute('aria-setsize', neighborhoods.length + 1);
     select.append(option);
   });
 }
@@ -58,11 +62,14 @@ fetchCuisines = () => {
  */
 fillCuisinesHTML = (cuisines = self.cuisines) => {
   const select = document.getElementById('cuisines-select');
-
-  cuisines.forEach(cuisine => {
+  select.querySelector('option[value="all"]').setAttribute('aria-setsize', cuisines.length + 1);
+  cuisines.forEach((cuisine, i) => {
     const option = document.createElement('option');
     option.innerHTML = cuisine;
     option.value = cuisine;
+    // Accessibility tags to make sure the screen reader knows the ComboBox elements number and position
+    option.setAttribute('aria-posinset', i + 2);
+    option.setAttribute('aria-setsize', cuisines.length + 1);
     select.append(option);
   });
 }
@@ -138,6 +145,11 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  // Use a div with a background image instead of an img tag for multiple reasons:
+  // 1. A background image allows us to properly resize and cut the image as needed without writing overcomplicated code,
+  //    thanks to the `background-size: cover` property.
+  // 2. In this particular case, the image is only decorative, so it shouldn't be announced by screenreaders and other
+  //    accessibility tools, so we can use a div without any issue
   const image = document.createElement('div');
   image.className = 'restaurant-img';
   image.style.backgroundImage = `url("${DBHelper.imageUrlForRestaurant(restaurant)}")`;

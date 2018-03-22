@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -22,14 +22,14 @@
     <section id="map-container">
       <div id="map"></div>
     </section>
-    <section>
+    <section class="filter-section" aria-labelledby="filter-label">
       <div class="filter-options">
-        <h2>Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
-          <option value="all">All Neighborhoods</option>
+        <h2 id="filter-label"><i class="fas fa-filter"></i> Filter</h2>
+        <select title="Neighborhoods filter" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+          <option value="all" aria-posinset="1">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
-          <option value="all">All Cuisines</option>
+        <select title="Cuisines filter" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+          <option value="all" aria-posinset="1">All Cuisines</option>
         </select>
       </div>
       <ul id="restaurants-list"></ul>
@@ -39,7 +39,8 @@
   <script src="js/dbhelper.js"></script>
   <script src="js/main.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpgAn3aaRiyWWjDCZJF9dyac0GVwk5a_w&libraries=places&callback=initMap"></script>
-
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js"></script>
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
