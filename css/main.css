@@ -1,5 +1,5 @@
 /* ====================== Map ====================== */
-#map {
+#map-container {
   height: 280px;
   width: 100%;
   background-color: #ccc;
@@ -13,10 +13,12 @@
 
 .filter-options {
   display: flex;
-  align-items: center;
   justify-content: center;
   max-width: 720px;
   margin: auto;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 24px 12px;
 }
 
 .filter-options h2 {
@@ -38,7 +40,7 @@
   margin: 10px;
   padding: 0 10px;
   width: 100%;
-  max-width: 200px;
+  max-width: calc(100% - 20px);
 }
 
 /* ====================== Restaurant Listing ====================== */
@@ -119,18 +121,17 @@
 }
 
 @media screen and (min-width: 481px) {
-  #map {
-    height: 400px;
-  }
-}
-
-@media screen and (max-width: 480px) {
   .filter-options {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px 12px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
   }
+
   .filter-options select {
-    max-width: calc(100% - 20px);
+    max-width: 200px;
+  }
+
+  #map-container {
+    height: 400px;
   }
 }

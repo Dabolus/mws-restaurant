@@ -47,21 +47,32 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #main-content {
   background-color: #f3f3f3;
   min-height: 100%;
+  margin-top: 64px;
 }
 
 #footer {
+  width: 100%;
+  height: 64px;
   background-color: #444;
   color: #aaa;
   font-size: 8pt;
   letter-spacing: 1px;
-  padding: 25px;
   text-align: center;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
 }
 
 /* ====================== Navigation ====================== */
 .skip-link {
-  position: absolute;
+  position: fixed;
   top: -40px;
   left: 0;
   background-color: #ffa500;
@@ -75,17 +86,27 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 
 nav {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 80px;
+  height: 64px;
   background-color: #252831;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 }
 
 nav .logo {
-  max-width: calc(100% - 36px);
+  max-width: 100%;
   padding: 0 18px;
-  height: 36px;
+  height: 28px;
   margin: auto;
+}
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
 }
