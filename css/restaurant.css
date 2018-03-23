@@ -27,19 +27,19 @@
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-  color: #0275d8;
+  color: #1565c0;
   text-decoration: none;
 }
 
 /* Add a color on mouse-over */
 #breadcrumb li a:hover {
-  color: #01447e;
+  color: #003c8f;
   text-decoration: underline;
 }
 
 /* ====================== Restaurant Details ====================== */
 #restaurant-name {
-  color: #f18200;
+  color: #d32f2f;
   font-family: Arial, sans-serif;
   font-size: 20pt;
   font-weight: 200;
@@ -117,7 +117,7 @@
 }
 
 #reviews-container h2 {
-  color: #f58500;
+  color: #d32f2f;
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;

@@ -10,5 +10,8 @@
     "eslint": "^4.19.0",
     "eslint-config-udacity": "^2.0.2",
     "eslint-plugin-import": "^2.9.0"
+  },
+  "scripts": {
+    "lint": "eslint --fix js/*"
   }
 }
