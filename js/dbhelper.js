@@ -150,8 +150,11 @@ class DBHelper {
   /**
    * Restaurant image URL.
    */
-  static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+  static imageUrlsForRestaurant(restaurant) {
+    return Object.keys(restaurant.photographs).reduce((obj, photo) => {
+      obj[photo] = `/img/${restaurant.photographs[photo]}`;
+      return obj;
+    }, {});
   }
 
   /**

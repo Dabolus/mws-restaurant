@@ -154,9 +154,10 @@ createRestaurantHTML = (restaurant) => {
   //    thanks to the `background-size: cover` property.
   // 2. In this particular case, the image is only decorative, so it shouldn't be announced by screenreaders and other
   //    accessibility tools, so we can use a div without any issue
+  // TODO: Consider switching back to an img tag in order to support srcset
   const image = document.createElement('div');
   image.className = 'restaurant-img';
-  image.style.backgroundImage = `url("${DBHelper.imageUrlForRestaurant(restaurant)}")`;
+  image.style.backgroundImage = `url("${DBHelper.imageUrlsForRestaurant(restaurant)['2x']}")`;
   li.append(image);
 
   const info = document.createElement('div');
