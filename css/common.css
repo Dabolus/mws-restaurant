@@ -9,10 +9,30 @@ body, td, th, p {
   line-height: 1.5;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-height: 100vh;
+}
+
 body {
   background-color: #fdfdfd;
-  margin: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+body header {
+  flex: 0 0 auto;
+}
+
+body main {
+  flex: 1 1 auto;
+}
+
+body footer {
+  flex: 0 0 auto;
 }
 
 ul, li {
