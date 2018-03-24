@@ -16,15 +16,17 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav id="main-nav">
       <a href="/">
         <img class="logo" src="img/logo.svg" alt="Restaurant Reviews" title="Restaurant Reviews">
       </a>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb">
-      <li><a href="/">Home</a></li>
-    </ul>
+    <nav id="breadcrumb-nav">
+      <ul id="breadcrumb">
+        <li><a href="/">Home</a></li>
+      </ul>
+    </nav>
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
@@ -56,7 +58,7 @@
     <!-- End info -->
     <!-- Beginning map -->
     <section id="map-container">
-      <div id="map"></div>
+      <div id="map" role="application"></div>
     </section>
     <!-- End map -->
   </main>

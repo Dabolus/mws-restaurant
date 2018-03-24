@@ -105,7 +105,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   top: 0;
 }
 
-nav {
+#main-nav {
   position: fixed;
   top: 0;
   left: 0;
@@ -118,7 +118,7 @@ nav {
   z-index: 10;
 }
 
-nav .logo {
+#main-nav .logo {
   max-width: 100%;
   padding: 0 18px;
   height: 28px;
