@@ -149,15 +149,12 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
-  // Use a div with a background image instead of an img tag for multiple reasons:
-  // 1. A background image allows us to properly resize and cut the image as needed without writing overcomplicated code,
-  //    thanks to the `background-size: cover` property.
-  // 2. In this particular case, the image is only decorative, so it shouldn't be announced by screenreaders and other
-  //    accessibility tools, so we can use a div without any issue
-  // TODO: Consider switching back to an img tag in order to support srcset
-  const image = document.createElement('div');
+  const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.style.backgroundImage = `url("${DBHelper.imageUrlsForRestaurant(restaurant)['2x']}")`;
+  const urls = DBHelper.imageUrlsForRestaurant(restaurant);
+  image.src = urls['2x'];
+  image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
+  image.title = image.alt = restaurant.name;
   li.append(image);
 
   const info = document.createElement('div');

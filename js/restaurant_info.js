@@ -57,6 +57,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const urls = DBHelper.imageUrlsForRestaurant(restaurant);
   image.src = urls['2x'];
   image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
+  image.title = image.alt = restaurant.name;
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
