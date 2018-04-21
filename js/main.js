@@ -1,8 +1,8 @@
-let restaurants,
-  neighborhoods,
-  cuisines;
-var map;
+let restaurants = [];
+let neighborhoods = [];
+let cuisines = [];
 var markers = [];
+var map;
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -20,14 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
  * Fetch all neighborhoods and set their HTML.
  */
 fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-    if (error) { // Got an error
-      console.error(error);
-    } else {
+  DBHelper.fetchNeighborhoods()
+    .then(neighborhoods => {
       self.neighborhoods = neighborhoods;
       fillNeighborhoodsHTML();
-    }
-  });
+    })
+    .catch(console.error);
 };
 
 /**
@@ -51,14 +49,12 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
  * Fetch all cuisines and set their HTML.
  */
 fetchCuisines = () => {
-  DBHelper.fetchCuisines((error, cuisines) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
+  DBHelper.fetchCuisines()
+    .then(cuisines => {
       self.cuisines = cuisines;
       fillCuisinesHTML();
-    }
-  });
+    })
+    .catch(console.error);
 };
 
 /**
@@ -107,14 +103,12 @@ updateRestaurants = () => {
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
 
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
+  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood)
+    .then(restaurants => {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
-    }
-  });
+    })
+    .catch(console.error);
 };
 
 /**
@@ -147,15 +141,21 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
+  if (!restaurant) {
+    return;
+  }
+
   const li = document.createElement('li');
 
-  const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  const urls = DBHelper.imageUrlsForRestaurant(restaurant);
-  image.src = urls['2x'];
-  image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
-  image.title = image.alt = restaurant.name;
-  li.append(image);
+  if (restaurant.photograph) {
+    const image = document.createElement('img');
+    image.className = 'restaurant-img';
+    const urls = DBHelper.imageUrlsForRestaurant(restaurant);
+    image.src = urls['2x'];
+    image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
+    image.title = image.alt = restaurant.name;
+    li.append(image);
+  }
 
   const info = document.createElement('div');
   info.className = 'restaurant-info';
