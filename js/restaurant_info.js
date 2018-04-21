@@ -46,14 +46,12 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
-  if (restaurant.photograph) {
-    const image = document.getElementById('restaurant-img');
-    image.className = 'restaurant-img';
-    const urls = DBHelper.imageUrlsForRestaurant(restaurant);
-    image.src = urls['2x'];
-    image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
-    image.title = image.alt = restaurant.name;
-  }
+  const image = document.getElementById('restaurant-img');
+  image.className = 'restaurant-img';
+  const urls = DBHelper.imageUrlsForRestaurant(restaurant);
+  image.src = urls['2x'];
+  image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
+  image.title = image.alt = restaurant.name;
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

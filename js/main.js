@@ -147,15 +147,13 @@ createRestaurantHTML = (restaurant) => {
 
   const li = document.createElement('li');
 
-  if (restaurant.photograph) {
-    const image = document.createElement('img');
-    image.className = 'restaurant-img';
-    const urls = DBHelper.imageUrlsForRestaurant(restaurant);
-    image.src = urls['2x'];
-    image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
-    image.title = image.alt = restaurant.name;
-    li.append(image);
-  }
+  const image = document.createElement('img');
+  image.className = 'restaurant-img';
+  const urls = DBHelper.imageUrlsForRestaurant(restaurant);
+  image.src = urls['2x'];
+  image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
+  image.title = image.alt = restaurant.name;
+  li.append(image);
 
   const info = document.createElement('div');
   info.className = 'restaurant-info';
