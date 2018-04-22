@@ -1,45 +1,49 @@
 /**
  * Initialize Google map, called from HTML.
+ * @returns {undefined}
  */
 window.initMap = () => {
-  fetchRestaurantFromURL()
+  self.fetchRestaurantFromURL()
     .then(restaurant => {
-      self.map = new google.maps.Map(document.getElementById('map'), {
+      self.map = new self.google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false,
       });
-      fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      self.fillBreadcrumb();
+      self.DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     })
     .catch(console.error);
 };
 
 /**
  * Get current restaurant from page URL.
+ * @returns {Promise<object | Error>} A promise that resolves to the restaurant fetched from the url.
  */
-fetchRestaurantFromURL = () => {
+self.fetchRestaurantFromURL = () => {
   if (self.restaurant) {
     return Promise.resolve(self.restaurant);
   }
 
-  const id = getParameterByName('id');
+  const id = self.getParameterByName('id');
   if (!id) { // no id found in URL
     return Promise.reject(new Error('No restaurant id in URL'));
   }
-  return DBHelper.fetchRestaurantById(id)
+  return self.DBHelper.fetchRestaurantById(id)
     .then(restaurant => {
       self.restaurant = restaurant;
-      fillRestaurantHTML();
+      self.fillRestaurantHTML();
       return restaurant;
     })
     .catch(console.error);
 };
 
 /**
- * Create restaurant HTML and add it to the webpage
+ * Create restaurant HTML and add it to the webpage.
+ * @param {object} restaurant The restaurant to add to the webpage.
+ * @returns {undefined}
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+self.fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
@@ -48,7 +52,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';
-  const urls = DBHelper.imageUrlsForRestaurant(restaurant);
+  const urls = self.DBHelper.imageUrlsForRestaurant(restaurant);
   image.src = urls['2x'];
   image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
   image.title = image.alt = restaurant.name;
@@ -58,38 +62,40 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   // fill operating hours
   if (restaurant.operating_hours) {
-    fillRestaurantHoursHTML();
+    self.fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  self.fillReviewsHTML();
 };
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
+ * @param {object[]} operatingHours The operating hours to add to the webpage.
+ * @returns {undefined}
  */
-fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
+self.fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
   const hours = document.getElementById('restaurant-hours');
-  for (let key in operatingHours) {
-    if (operatingHours.hasOwnProperty(key)) {
-      const row = document.createElement('tr');
+  for (const [key, operatingHour] of Object.entries(operatingHours)) {
+    const row = document.createElement('tr');
 
-      const day = document.createElement('td');
-      day.innerHTML = `<b>${key}</b>`;
-      row.appendChild(day);
+    const day = document.createElement('td');
+    day.innerHTML = `<b>${key}</b>`;
+    row.appendChild(day);
 
-      const time = document.createElement('td');
-      time.innerHTML = operatingHours[key];
-      row.appendChild(time);
+    const time = document.createElement('td');
+    time.innerHTML = operatingHour;
+    row.appendChild(time);
 
-      hours.appendChild(row);
-    }
+    hours.appendChild(row);
   }
 };
 
 /**
  * Create all reviews HTML and add them to the webpage.
+ * @param {object[]} reviews The reviews to add to the webpage.
+ * @returns {undefined}
  */
-fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+self.fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -103,15 +109,17 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   }
   const ul = document.getElementById('reviews-list');
   reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+    ul.appendChild(self.createReviewHTML(review));
   });
   container.appendChild(ul);
 };
 
 /**
  * Create review HTML and add it to the webpage.
+ * @param {object} review The review to create the HTML of.
+ * @returns {HTMLLIElement | undefined} The HTML li tag of the review.
  */
-createReviewHTML = (review) => {
+self.createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('h4');
   name.innerHTML = review.name;
@@ -145,8 +153,10 @@ createReviewHTML = (review) => {
 
 /**
  * Add restaurant name to the breadcrumb navigation menu
+ * @param {object} restaurant The restaurant to get the name from.
+ * @returns {undefined}
  */
-fillBreadcrumb = (restaurant = self.restaurant) => {
+self.fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
@@ -155,8 +165,11 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
 
 /**
  * Get a parameter by name from page URL.
+ * @param {string} name The parameter name to get the value of.
+ * @param {string} url The url to parse the parameters from.
+ * @returns {string | null} The value of the parameter.
  */
-getParameterByName = (name, url) => {
+self.getParameterByName = (name, url) => {
   if (!url)
     url = window.location.href;
   name = name.replace(/[[\]]/g, '\\$&');

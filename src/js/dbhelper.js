@@ -1,12 +1,12 @@
 /**
  * Common database helper functions.
  */
-// eslint-disable-next-line no-unused-vars
-class DBHelper {
+self.DBHelper = class DBHelper {
 
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
+   * @returns {string} The database URL.
    */
   static get DATABASE_URL() {
     return 'http://localhost:1337';
@@ -14,6 +14,7 @@ class DBHelper {
 
   /**
    * Fetch all restaurants.
+   * @returns {Promise<object[] | Error>} A promise that resolves to the list of restaurants.
    */
   static fetchRestaurants() {
     return fetch(`${DBHelper.DATABASE_URL}/restaurants`)
@@ -22,6 +23,8 @@ class DBHelper {
 
   /**
    * Fetch a restaurant by its ID.
+   * @param {number} id The ID of the restaurant to fetch.
+   * @returns {Promise<object | Error>} A promise that resolves to the restaurant with the given ID.
    */
   static fetchRestaurantById(id) {
     // fetch all restaurants with proper error handling.
@@ -31,6 +34,8 @@ class DBHelper {
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
+   * @param {string} cuisine The cuisine to filter the restaurants by.
+   * @returns {Promise<object[] | Error>} A promise that resolves to the list of restaurants with the given cuisine.
    */
   static fetchRestaurantByCuisine(cuisine) {
     // Fetch all restaurants  with proper error handling
@@ -40,6 +45,8 @@ class DBHelper {
 
   /**
    * Fetch restaurants by a neighborhood with proper error handling.
+   * @param {string} neighborhood The neighborhood to filter the restaurants by.
+   * @returns {Promise<object[] | Error>} A promise that resolves to the list of restaurants with the given neighborhood.
    */
   static fetchRestaurantByNeighborhood(neighborhood) {
     // Fetch all restaurants
@@ -49,6 +56,9 @@ class DBHelper {
 
   /**
    * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
+   * @param {string} cuisine The cuisine to filter the restaurants by.
+   * @param {string} neighborhood The neighborhood to filter the restaurants by.
+   * @returns {Promise<object[] | Error>} A promise that resolves to the list of restaurants with the given cuisine and neighborhood.
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood) {
     // Fetch all restaurants
@@ -67,6 +77,7 @@ class DBHelper {
 
   /**
    * Fetch all neighborhoods with proper error handling.
+   * @returns {Promise<string[] | Error>} A promise that resolves to the list of neighborhoods.
    */
   static fetchNeighborhoods() {
     // Fetch all restaurants
@@ -79,6 +90,7 @@ class DBHelper {
 
   /**
    * Fetch all cuisines with proper error handling.
+   * @returns {Promise<string[] | Error>} A promise that resolves to the list of cuisines.
    */
   static fetchCuisines() {
     // Fetch all restaurants
@@ -91,13 +103,17 @@ class DBHelper {
 
   /**
    * Restaurant page URL.
+   * @param {object} restaurant The restaurant to get the URL of.
+   * @returns {string} The URL for the given restaurant.
    */
   static urlForRestaurant(restaurant) {
-    return (`./restaurant.html?id=${restaurant.id}`);
+    return `./restaurant.html?id=${restaurant.id}`;
   }
 
   /**
    * Restaurant image URL.
+   * @param {object} restaurant The restaurant to get the image URLs of.
+   * @returns {object} An key-value object containing the restaurant image sources in different sizes.
    */
   static imageUrlsForRestaurant(restaurant) {
     return {
@@ -108,14 +124,17 @@ class DBHelper {
 
   /**
    * Map marker for a restaurant.
+   * @param {object} restaurant The restaurant to place the marker of inside the map.
+   * @param {object} map The map to place the marker of the restaurant in.
+   * @returns {object} The marker placed inside the given map for the given restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {
-    return new google.maps.Marker({
+    return new self.google.maps.Marker({
       map,
       position: restaurant.latlng,
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
-      animation: google.maps.Animation.DROP,
+      animation: self.google.maps.Animation.DROP,
     });
   }
-}
+};

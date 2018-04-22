@@ -2,7 +2,9 @@
   "extends": ["eslint:recommended", "eslint-config-udacity"],
   "rules": {
     "indent": ["warn", 2],
-    "no-console": "warn",
+    "no-console": ["error", {
+      "allow": ["error"]
+    }],
     "require-jsdoc": ["warn", {
       "require": {
         "FunctionDeclaration": true,

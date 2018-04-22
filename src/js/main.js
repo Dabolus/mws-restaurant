@@ -11,26 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
-  fetchNeighborhoods();
-  fetchCuisines();
+  self.fetchNeighborhoods();
+  self.fetchCuisines();
 });
 
 /**
  * Fetch all neighborhoods and set their HTML.
+ * @returns {undefined}
  */
-fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods()
+self.fetchNeighborhoods = () => {
+  self.DBHelper.fetchNeighborhoods()
     .then(neighborhoods => {
       self.neighborhoods = neighborhoods;
-      fillNeighborhoodsHTML();
+      self.fillNeighborhoodsHTML();
     })
     .catch(console.error);
 };
 
 /**
  * Set neighborhoods HTML.
+ * @param {string[]} neighborhoods The neighborhoods to set into the HTML.
+ * @returns {undefined}
  */
-fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
+self.fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
   select.querySelector('option[value="all"]').setAttribute('aria-setsize', neighborhoods.length + 1);
   neighborhoods.forEach((neighborhood, i) => {
@@ -46,20 +49,23 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 
 /**
  * Fetch all cuisines and set their HTML.
+ * @returns {undefined}
  */
-fetchCuisines = () => {
-  DBHelper.fetchCuisines()
+self.fetchCuisines = () => {
+  self.DBHelper.fetchCuisines()
     .then(cuisines => {
       self.cuisines = cuisines;
-      fillCuisinesHTML();
+      self.fillCuisinesHTML();
     })
     .catch(console.error);
 };
 
 /**
  * Set cuisines HTML.
+ * @param {string[]} cuisines The cuisines to set into the HTML.
+ * @returns {undefined}
  */
-fillCuisinesHTML = (cuisines = self.cuisines) => {
+self.fillCuisinesHTML = (cuisines = self.cuisines) => {
   const select = document.getElementById('cuisines-select');
   select.querySelector('option[value="all"]').setAttribute('aria-setsize', cuisines.length + 1);
   cuisines.forEach((cuisine, i) => {
@@ -75,24 +81,26 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 
 /**
  * Initialize Google map, called from HTML.
+ * @returns {undefined}
  */
 window.initMap = () => {
   let loc = {
     lat: 40.722216,
     lng: -73.987501
   };
-  self.map = new google.maps.Map(document.getElementById('map'), {
+  self.map = new self.google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
     scrollwheel: false
   });
-  updateRestaurants();
+  self.updateRestaurants();
 };
 
 /**
  * Update page and map for current restaurants.
+ * @returns {undefined}
  */
-updateRestaurants = () => {
+self.updateRestaurants = () => {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
@@ -102,18 +110,20 @@ updateRestaurants = () => {
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
 
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood)
+  self.DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood)
     .then(restaurants => {
-      resetRestaurants(restaurants);
-      fillRestaurantsHTML();
+      self.resetRestaurants(restaurants);
+      self.fillRestaurantsHTML();
     })
     .catch(console.error);
 };
 
 /**
  * Clear current restaurants, their HTML and remove their map markers.
+ * @param {object[]} restaurants The restaurants to set after clearing the old ones out.
+ * @returns {undefined}
  */
-resetRestaurants = (restaurants) => {
+self.resetRestaurants = (restaurants) => {
   // Remove all restaurants
   self.restaurants = [];
   const ul = document.getElementById('restaurants-list');
@@ -127,19 +137,23 @@ resetRestaurants = (restaurants) => {
 
 /**
  * Create all restaurants HTML and add them to the webpage.
+ * @param {object[]} restaurants The restaurants to add to the HTML.
+ * @returns {undefined}
  */
-fillRestaurantsHTML = (restaurants = self.restaurants) => {
+self.fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
+    ul.append(self.createRestaurantHTML(restaurant));
   });
-  addMarkersToMap();
+  self.addMarkersToMap();
 };
 
 /**
  * Create restaurant HTML.
+ * @param {object} restaurant The restaurant to create the HTML for.
+ * @returns {HTMLLIElement | undefined} The HTML li tag of the restaurant.
  */
-createRestaurantHTML = (restaurant) => {
+self.createRestaurantHTML = (restaurant) => {
   if (!restaurant) {
     return;
   }
@@ -148,7 +162,7 @@ createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  const urls = DBHelper.imageUrlsForRestaurant(restaurant);
+  const urls = self.DBHelper.imageUrlsForRestaurant(restaurant);
   image.src = urls['2x'];
   image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
   image.title = image.alt = restaurant.name;
@@ -171,7 +185,7 @@ createRestaurantHTML = (restaurant) => {
 
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
-  more.href = DBHelper.urlForRestaurant(restaurant);
+  more.href = self.DBHelper.urlForRestaurant(restaurant);
   info.append(more);
 
   li.append(info);
@@ -181,12 +195,14 @@ createRestaurantHTML = (restaurant) => {
 
 /**
  * Add markers for current restaurants to the map.
+ * @param {object[]} restaurants The restaurants to add to the map.
+ * @returns {undefined}
  */
-addMarkersToMap = (restaurants = self.restaurants) => {
+self.addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
+    const marker = self.DBHelper.mapMarkerForRestaurant(restaurant, self.map);
+    self.google.maps.event.addListener(marker, 'click', () => {
       window.location.href = marker.url;
     });
     self.markers.push(marker);
