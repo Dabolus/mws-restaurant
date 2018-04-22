@@ -1,8 +1,7 @@
-let restaurants = [];
-let neighborhoods = [];
-let cuisines = [];
-var markers = [];
-var map;
+self.restaurants = [];
+self.neighborhoods = [];
+self.cuisines = [];
+self.markers = [];
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.

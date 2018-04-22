@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes">
+
+    <!-- Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="194x194" href="/img/icons/favicon-194x194.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/img/icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16x16.png">
+    <link rel="manifest" href="/img/icons/site.webmanifest">
+    <link rel="mask-icon" href="/img/icons/safari-pinned-tab.svg" color="#252831">
+    <link rel="shortcut icon" href="/img/icons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Restaurant Reviews">
+    <meta name="application-name" content="Restaurant Reviews">
+    <meta name="msapplication-TileColor" content="#252831">
+    <meta name="msapplication-TileImage" content="/img/icons/mstile-144x144.png">
+    <meta name="msapplication-config" content="/img/icons/browserconfig.xml">
+    <meta name="theme-color" content="#252831">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Restaurant Reviews</title>
+  </head>
+  <body>
+    <header>
+      <a href="#restaurants-list" class="skip-link">Skip to the restaurants list</a>
+      <nav id="main-nav">
+        <a href="/">
+          <img class="logo" src="img/logo.svg" alt="Restaurant Reviews" title="Restaurant Reviews">
+        </a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section id="map-container">
+        <div id="map" role="application"></div>
+      </section>
+      <section class="filter-section" aria-labelledby="filter-label">
+        <div class="filter-options">
+          <h2 id="filter-label"><i class="fas fa-filter"></i> Filter</h2>
+          <select title="Neighborhoods filter" id="neighborhoods-select" name="neighborhoods"
+                  onchange="updateRestaurants()">
+            <option value="all" aria-posinset="1">All Neighborhoods</option>
+          </select>
+          <select title="Cuisines filter" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+            <option value="all" aria-posinset="1">All Cuisines</option>
+          </select>
+        </div>
+      </section>
+      <section>
+        <ul id="restaurants-list" tabindex="-1"></ul>
+      </section>
+    </main>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js"></script>
+    <script defer src="js/dbhelper.js"></script>
+    <script defer src="js/main.js"></script>
+    <script defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpgAn3aaRiyWWjDCZJF9dyac0GVwk5a_w&libraries=places&callback=initMap"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/regular.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js"></script>
+
+    <footer id="footer">
+        <span>
+          Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+        </span>
+    </footer>
+  </body>
+</html>

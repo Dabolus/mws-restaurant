@@ -9,9 +9,21 @@
   "devDependencies": {
     "eslint": "^4.19.0",
     "eslint-config-udacity": "^2.0.2",
-    "eslint-plugin-import": "^2.9.0"
+    "eslint-plugin-import": "^2.9.0",
+    "gulp": "^4.0.0",
+    "gulp-babel-minify": "^0.4.0",
+    "gulp-clean-css": "^3.9.3",
+    "gulp-csslint": "^1.0.1",
+    "gulp-eslint": "^4.0.2",
+    "gulp-htmllint": "^0.0.15",
+    "gulp-htmlmin": "^4.0.0",
+    "http-server": "^0.11.1"
   },
   "scripts": {
-    "lint": "eslint --fix js/*"
+    "gulp": "gulp",
+    "lint": "gulp lint",
+    "build": "gulp build",
+    "serve:dev": "http-server src",
+    "serve:prod": "gulp && http-server dist"
   }
 }
