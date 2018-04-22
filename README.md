@@ -9,5 +9,5 @@ The available scripts are:
 yarn lint          # calls the gulp lint task, that will lint HTML, CSS and JS
 yarn build         # calls the gulp build task, that will minify and copy the project to the dist folder
 yarn serve:dev     # serves the unminified files from the src folder
-yarn serve:prod    # build the project and serves the production ready files from the dist folder
+yarn serve:prod    # builds the project and serves the production ready files from the dist folder
 ```
