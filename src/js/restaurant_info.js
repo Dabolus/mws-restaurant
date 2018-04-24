@@ -1,19 +1,38 @@
 /**
+ * Fetch neighborhoods and cuisines as soon as the page is loaded.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Load and register pre-caching Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+  self.fetchRestaurantFromURL()
+    .then(() => self.fillBreadcrumb());
+});
+
+/**
  * Initialize Google map, called from HTML.
  * @returns {undefined}
  */
-window.initMap = () => {
-  self.fetchRestaurantFromURL()
-    .then(restaurant => {
-      self.map = new self.google.maps.Map(document.getElementById('map'), {
-        zoom: 16,
-        center: restaurant.latlng,
-        scrollwheel: false,
-      });
-      self.fillBreadcrumb();
-      self.DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    })
-    .catch(console.error);
+window.enableMap = () => {
+  const mapEnablerButton = document.getElementById('map-enabler');
+  let mapInitialized = false;
+  mapEnablerButton.addEventListener('click', () => {
+    if (!mapInitialized) {
+      self.fetchRestaurantFromURL().then(restaurant => {
+        self.map = new self.google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: restaurant.latlng,
+          scrollwheel: false,
+        });
+        self.DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+        mapInitialized = true;
+      })
+        .catch(console.error);
+    }
+    document.getElementById('map-container').classList.add('shown');
+  });
+  mapEnablerButton.disabled = false;
 };
 
 /**

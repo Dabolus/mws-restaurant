@@ -103,12 +103,73 @@
   margin-bottom: calc(100vh - 64px);
 }
 
+#map, #map-overlay {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: .4s opacity, z-index step-end .4s;
+  width: 100%;
+  will-change: opacity;
+}
+
+#map {
+  opacity: 0;
+  z-index: -1;
+}
+
+#map-overlay {
+  align-items: center;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDM1IDIwMzUiPjxmaWx0ZXIgaWQ9ImIiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEyIiAvPjwvZmlsdGVyPjxnIGZpbHRlcj0idXJsKCNiKSI+PHBhdGggZmlsbD0iI2VjZWNlYSIgZD0iTTAgMGgyMDM1djIwMzVIMHoiLz48ZWxsaXBzZSBmaWxsPSIjODBjOWZmIiBmaWxsLW9wYWNpdHk9Ii41IiByeD0iMSIgcnk9IjEiIHRyYW5zZm9ybT0ibWF0cml4KC0xNTEuMjc2NDUgLTMxLjA3MjM2IDEwOC4wMzIzIC01MjUuOTU3NTYgMjAxMS42IDE3ODMuNykiLz48cGF0aCBmaWxsPSIjYTZkZjg5IiBmaWxsLW9wYWNpdHk9Ii41IiBkPSJNNTE5LjIgMTU2MS40bC0xMzguNS00Ny42LTgyIDE0MS43IDY4LjggMTY5LjZ6Ii8+PGVsbGlwc2UgZmlsbD0iI2Q0ZGZjNSIgZmlsbC1vcGFjaXR5PSIuNSIgcng9IjEiIHJ5PSIxIiB0cmFuc2Zvcm09Im1hdHJpeCg0LjgzMzUgLTExNS4yNjU4MSAxODEuMDU5NjUgNy41OTI0NiA4NjMgMjY1KSIvPjxlbGxpcHNlIGZpbGw9IiNmZGVhOWQiIGZpbGwtb3BhY2l0eT0iLjUiIHJ4PSIxIiByeT0iMSIgdHJhbnNmb3JtPSJyb3RhdGUoMTAxLjMgMTU5LjkgMTY1My45KSBzY2FsZSgzNzkuNzMxMDMgMjYuNTQ4MDkpIi8+PHBhdGggZmlsbD0iI2FlZDc5ZCIgZmlsbC1vcGFjaXR5PSIuNSIgZD0iTTEyNTcgMjAyNWwyNi4yLTE2MS40IDc5LjctMjkuNyAyNS42IDYxLjh6Ii8+PHBhdGggZmlsbD0iI2MxZGNhNyIgZmlsbC1vcGFjaXR5PSIuNSIgZD0iTTE4MDAuNSAxMzIzLjVMMTcyOSAxMTA5bC04Ny41IDE4Mi44eiIvPjxwYXRoIGZpbGw9IiNmNWRmOGUiIGZpbGwtb3BhY2l0eT0iLjUiIGQ9Ik0xOTI1LjIgMTM2OS43bDIzMy0zNDUtMzUzLjYgNjcyLjMgODktMjI5LjZ6Ii8+PGVsbGlwc2UgZmlsbD0iI2Y2ZjFlYyIgZmlsbC1vcGFjaXR5PSIuNSIgcng9IjEiIHJ5PSIxIiB0cmFuc2Zvcm09Im1hdHJpeCg2NjEuMzkyNjUgLTczOC42NDczMiAzMTguNTU1MjQgMjg1LjIzNzc1IDEzNDkuMSA5MTAuOCkiLz48L2c+PC9zdmc+);
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  opacity: 1;
+  z-index: 0;
+}
+
+#map-enabler {
+  background-color: #d32f2f;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+  0 1px 5px 0 rgba(0, 0, 0, 0.12),
+  0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  cursor: pointer;
+  font-size: 10pt;
+  margin: 15px 0 0;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#map-enabler[disabled] {
+  background-color: #777;
+  cursor: not-allowed;
+}
+
+#map-enabler:not([disabled]):hover, #map-enabler:not([disabled]):focus {
+  background-color: #9a0007;
+  text-decoration: underline;
+}
+
 #map-container {
+  background-size: cover;
   flex: 1 1 auto;
-  height: calc(100vh - 65px);
+  height: calc(100vh - 129px);
   left: 0;
   position: fixed;
-  top: 65px;
+  top: 129px;
+  z-index: -1;
+}
+
+#map-container.shown #map {
+  opacity: 1;
+  z-index: 0;
+}
+
+#map-container.shown #map-overlay {
+  opacity: 0;
   z-index: -1;
 }
 
@@ -200,7 +261,9 @@
   }
   #map-container {
     height: 100%;
-    position: static;
+    left: 0;
+    position: relative;
+    top: 0;
     z-index: 0;
   }
 }

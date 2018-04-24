@@ -1,7 +1,15 @@
 {
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
   "extends": ["eslint:recommended", "eslint-config-udacity"],
   "rules": {
-    "indent": ["warn", 2],
+    "indent": ["error", 2, {
+      "SwitchCase": 1
+    }],
     "no-console": ["error", {
       "allow": ["error"]
     }],
@@ -13,6 +21,7 @@
       }
     }],
     "valid-jsdoc": "warn",
-    "no-restricted-syntax": ["warn", "ForInStatement"]
+    "no-restricted-syntax": ["warn", "ForInStatement"],
+    "comma-dangle": ["warn", "always-multiline"]
   }
 }

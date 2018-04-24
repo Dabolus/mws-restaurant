@@ -1,14 +1,32 @@
 /* ====================== Map ====================== */
 #map-container {
   background-color: #ccc;
-  height: 280px;
+  height: 0;
+  transition: .4s height;
   width: 100%;
+  will-change: height;
+}
+
+#map-container.shown {
+  height: 280px;
 }
 
 /* ====================== Restaurant Filtering ====================== */
 .filter-section {
   background-color: #1976d2;
+  position: relative;
   width: 100%;
+}
+
+#map-enabler {
+  border: 0;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+  margin: 0;
+  padding: 6px 12px;
+  position: absolute;
+  right: 20px;
+  top: 0;
 }
 
 .filter-options {
@@ -133,7 +151,7 @@
     max-width: 200px;
   }
 
-  #map-container {
+  #map-container.shown {
     height: 400px;
   }
 }

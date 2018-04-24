@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   self.fetchNeighborhoods();
   self.fetchCuisines();
+  self.updateRestaurants();
 });
 
 /**
@@ -83,17 +84,31 @@ self.fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  * @returns {undefined}
  */
-window.initMap = () => {
-  let loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  self.map = new self.google.maps.Map(document.getElementById('map'), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
+window.enableMap = () => {
+  const mapEnablerButton = document.getElementById('map-enabler');
+  const mapContainer = document.getElementById('map-container');
+  let mapInitialized = false;
+  let mapShowing = false;
+  mapEnablerButton.addEventListener('click', () => {
+    if (!mapInitialized) {
+      let loc = {
+        lat: 40.722216,
+        lng: -73.987501,
+      };
+      self.map = new self.google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: loc,
+        scrollwheel: false,
+      });
+      self.addMarkersToMap();
+      mapInitialized = true;
+    }
+    mapShowing = !mapShowing;
+    mapContainer.classList.toggle('shown');
+    // We have to use this strategy to preserve the a11y
+    mapEnablerButton.innerText = mapShowing ? 'Hide map' : 'Show map';
   });
-  self.updateRestaurants();
+  mapEnablerButton.hidden = false;
 };
 
 /**
@@ -145,7 +160,6 @@ self.fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(self.createRestaurantHTML(restaurant));
   });
-  self.addMarkersToMap();
 };
 
 /**
