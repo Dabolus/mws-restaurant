@@ -1,8 +1,21 @@
-const staticCacheName = 'mws-restaurant-static-v1';
+const staticCacheName = 'mws-restaurant-static-v2';
 
-self.addEventListener('install', function(event) {
+// Import Jake Archibald's idb promised library
+self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js');
+
+self.putIntoIDB = (objs) =>
+  Promise.all((Array.isArray(objs) ? objs : [objs]).map(obj =>
+    self.idb.open('restaurant-reviews')
+      .then(db => db
+        .transaction('restaurants', 'readwrite')
+        .objectStore('restaurants')
+        .put(obj)
+      )
+  ));
+
+self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open(staticCacheName).then(function(cache) {
+    caches.open(staticCacheName).then(function (cache) {
       return cache.addAll([
         'index.html',
         'restaurant.html',
@@ -17,31 +30,68 @@ self.addEventListener('install', function(event) {
         'https://use.fontawesome.com/releases/v5.0.8/js/regular.js',
         'https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js',
         'https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css',
-        'https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js',
       ]);
     })
   );
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function (event) {
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          return cacheName.startsWith('mws-restaurant-') &&
-            cacheName !== staticCacheName;
-        }).map(function(cacheName) {
-          return caches.delete(cacheName);
-        })
-      );
-    })
+    Promise.all([
+      self.idb.open('restaurant-reviews', 1, upgradeDB => {
+        switch (upgradeDB.oldVersion) {
+          case 0:
+            upgradeDB.createObjectStore('restaurants', {
+              keyPath: 'id',
+            });
+        }
+      }),
+      caches.keys().then((cacheNames) =>
+        Promise.all(
+          cacheNames.filter((cacheName) =>
+            cacheName.startsWith('mws-restaurant-') && cacheName !== staticCacheName
+          ).map((cacheName) =>
+            caches.delete(cacheName)
+          )
+        )
+      ),
+    ])
   );
 });
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
-  );
+self.addEventListener('fetch', (event) => {
+  // For some reason, DevTools opening will trigger these o-i-c requests.
+  // We will just ignore them to avoid showing errors in console.
+  if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return Promise.resolve();
+
+  const requestURL = new URL(event.request.url);
+  if (requestURL.pathname.startsWith('/restaurants')) {
+    const [, restaurantId] = /^\/restaurants\/?([0-9]*)\/?$/g.exec(requestURL.pathname);
+    event.respondWith(
+      self.idb.open('restaurant-reviews')
+        .then(db => {
+          const objectStore = db
+            .transaction('restaurants')
+            .objectStore('restaurants');
+          return restaurantId ? objectStore.get(restaurantId) : objectStore.getAll();
+        })
+        .then(idbObjs => {
+          if (idbObjs && Object.keys(idbObjs).length > 0) {
+            return new Response(JSON.stringify(idbObjs));
+          }
+          return fetch(event.request)
+            .then(res => res.json())
+            .then(reqObjs => {
+              self.putIntoIDB(reqObjs);
+              return new Response(JSON.stringify(reqObjs));
+            });
+        })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) =>
+        response || fetch(event.request)
+      )
+    );
+  }
 });
