@@ -25,5 +25,8 @@
     "build": "gulp build",
     "serve:dev": "http-server src",
     "serve:prod": "gulp && http-server dist"
+  },
+  "engines": {
+    "node": ">=8.11.1"
   }
 }
