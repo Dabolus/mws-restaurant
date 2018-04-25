@@ -76,15 +76,21 @@ self.addEventListener('fetch', (event) => {
           return restaurantId ? objectStore.get(restaurantId) : objectStore.getAll();
         })
         .then(idbObjs => {
-          if (idbObjs && Object.keys(idbObjs).length > 0) {
-            return new Response(JSON.stringify(idbObjs));
-          }
-          return fetch(event.request)
+          // Even if we already saved the restaurants in idb,
+          // we start a new request so that the restaurants list
+          // can be updated in background. In this way, we will
+          // see the updated restaurants next time we open up
+          // the website
+          const reqPromise = fetch(event.request)
             .then(res => res.json())
             .then(reqObjs => {
               self.putIntoIDB(reqObjs);
               return new Response(JSON.stringify(reqObjs));
             });
+          if (idbObjs && Object.keys(idbObjs).length > 0) {
+            return new Response(JSON.stringify(idbObjs));
+          }
+          return reqPromise;
         })
     );
   } else {
