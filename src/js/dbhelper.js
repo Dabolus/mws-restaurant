@@ -107,7 +107,7 @@ self.DBHelper = class DBHelper {
    * @returns {string} The URL for the given restaurant.
    */
   static urlForRestaurant(restaurant) {
-    return `./restaurant.html?id=${restaurant.id}`;
+    return `restaurant.html?id=${restaurant.id}`;
   }
 
   /**
@@ -117,8 +117,8 @@ self.DBHelper = class DBHelper {
    */
   static imageUrlsForRestaurant(restaurant) {
     return {
-      '1x': `/img/${restaurant.photograph || 'placeholder'}_1x.jpg`,
-      '2x': `/img/${restaurant.photograph || 'placeholder'}_2x.jpg`,
+      '1x': `img/${restaurant.photograph || 'placeholder'}_1x.jpg`,
+      '2x': `img/${restaurant.photograph || 'placeholder'}_2x.jpg`,
     };
   }
 
