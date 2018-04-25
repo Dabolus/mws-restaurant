@@ -29,6 +29,16 @@
   top: 0;
 }
 
+#refresh {
+  background-color: #00af25;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  float: right;
+  margin: 0 15px 15px 15px;
+  padding: 8px;
+}
+
 .filter-options {
   align-items: flex-start;
   display: flex;
@@ -62,14 +72,20 @@
 }
 
 /* ====================== Restaurant Listing ====================== */
+#restaurants-container {
+  overflow: hidden;
+  padding: 30px 15px 60px;
+}
+
 #restaurants-list {
   background-color: #f3f3f3;
   display: flex;
   flex-wrap: wrap;
+  float: left;
   justify-content: center;
   list-style: outside none none;
   margin: 0;
-  padding: 30px 15px 60px;
+  padding: 0;
 }
 
 #restaurants-list li {
