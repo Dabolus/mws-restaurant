@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   self.fetchNeighborhoods();
   self.fetchCuisines();
   self.updateRestaurants();
+  self.imgsObserver = self.lozad('.restaurant-img');
+  self.imgsObserver.observe();
 });
 
 /**
@@ -129,6 +131,7 @@ self.updateRestaurants = () => {
     .then(restaurants => {
       self.resetRestaurants(restaurants);
       self.fillRestaurantsHTML();
+      self.imgsObserver.observe();
     })
     .catch(console.error);
 };
@@ -177,8 +180,8 @@ self.createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   const urls = self.DBHelper.imageUrlsForRestaurant(restaurant);
-  image.src = urls['2x'];
-  image.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
+  image.dataset.src = urls['2x'];
+  image.dataset.srcset = Object.entries(urls).reduce((arr, [k, v]) => arr.concat(`${v} ${k}`), []).join(', ');
   image.title = image.alt = restaurant.name;
   li.append(image);
 
