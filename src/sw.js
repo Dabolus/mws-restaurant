@@ -29,6 +29,7 @@ self.addEventListener('install', function (event) {
         'https://use.fontawesome.com/releases/v5.0.8/js/solid.js',
         'https://use.fontawesome.com/releases/v5.0.8/js/regular.js',
         'https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js',
+        'https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js',
       ]);
     })
   );
