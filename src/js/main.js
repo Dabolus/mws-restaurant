@@ -88,7 +88,7 @@ self.fillCuisinesHTML = (cuisines = self.cuisines) => {
  */
 window.enableMap = () => {
   const mapEnablerButton = document.getElementById('map-enabler');
-  const mapContainer = document.getElementById('map-container');
+  const mainContent = document.getElementById('main-content');
   let mapInitialized = false;
   let mapShowing = false;
   mapEnablerButton.addEventListener('click', () => {
@@ -106,7 +106,7 @@ window.enableMap = () => {
       mapInitialized = true;
     }
     mapShowing = !mapShowing;
-    mapContainer.classList.toggle('shown');
+    mainContent.classList.toggle('map-shown');
     // We have to use this strategy to preserve the a11y
     mapEnablerButton.innerText = mapShowing ? 'Hide map' : 'Show map';
   });
