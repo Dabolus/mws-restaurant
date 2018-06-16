@@ -7,6 +7,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "del": "^3.0.0",
     "eslint": "^4.19.1",
     "eslint-config-udacity": "^2.0.2",
     "eslint-plugin-import": "^2.12.0",
@@ -15,6 +16,7 @@
     "gulp-clean-css": "^3.9.4",
     "gulp-csslint": "^1.0.1",
     "gulp-eslint": "^4.0.2",
+    "gulp-gzip": "^1.4.2",
     "gulp-htmllint": "^0.0.15",
     "gulp-htmlmin": "^4.0.0",
     "http-server": "^0.11.1"
@@ -23,8 +25,9 @@
     "gulp": "gulp",
     "lint": "gulp lint",
     "build": "gulp build",
-    "serve:dev": "http-server src",
-    "serve:prod": "gulp && http-server dist"
+    "prod": "gulp",
+    "serve:dev": "http-server src -o",
+    "serve:prod": "gulp && http-server dist -g -c31536000"
   },
   "engines": {
     "node": ">=8.11.1"

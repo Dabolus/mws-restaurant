@@ -5,10 +5,17 @@ const {src, dest, task, series, parallel} = require('gulp');
 const minifyJS = require('gulp-babel-minify');
 const cleanCSS = require('gulp-clean-css');
 const htmlmin = require('gulp-htmlmin');
+const gzip = require('gulp-gzip');
 // linters
 const eslint = require('gulp-eslint');
 const csslint = require('gulp-csslint');
 const htmllint = require('gulp-htmllint');
+// others
+const del = require('del');
+
+/* UTILS */
+
+task('clean', () => del`dist`);
 
 /* LINT */
 
@@ -73,8 +80,16 @@ task('sw', () =>
   src('src/sw.js')
     .pipe(dest('dist')));
 
+task('gzip', () =>
+  src('dist/**/*.{html,css,js}')
+    .pipe(gzip({
+      level: 9,
+      skipGrowingFiles: true,
+    }))
+    .pipe(dest('dist')));
+
 task('build', parallel('scripts', 'styles', 'views', 'images', 'sw'));
 
 /* DEFAULT TASK */
-// First, we lint the files. If linting succeeds, we proceed with the build
-task('default', series('lint', 'build'));
+// First, we lint the files. If linting succeeds, we proceed by cleaning the output directory and then making the build
+task('default', series('lint', 'clean', 'build', 'gzip'));
