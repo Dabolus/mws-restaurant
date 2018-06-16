@@ -21,7 +21,7 @@ task('clean', () => del`dist`);
 
 // scripts
 task('lint:scripts', () =>
-  src('src/js/**/*.js')
+  src('src/**/*.js')
     .pipe(eslint())
     .pipe(eslint.format())
     .pipe(eslint.failAfterError()));
@@ -43,9 +43,9 @@ task('lint', parallel('lint:scripts', 'lint:styles', 'lint:views'));
 
 // scripts
 task('scripts', () =>
-  src('src/js/**/*.js')
+  src('src/**/*.js')
     .pipe(minifyJS())
-    .pipe(dest('dist/js')));
+    .pipe(dest('dist')));
 
 // styles
 task('styles', () =>
@@ -75,11 +75,6 @@ task('images', () =>
   src('src/img/**/*')
     .pipe(dest('dist/img')));
 
-// service worker
-task('sw', () =>
-  src('src/sw.js')
-    .pipe(dest('dist')));
-
 task('gzip', () =>
   src('dist/**/*.{html,css,js}')
     .pipe(gzip({
@@ -88,7 +83,7 @@ task('gzip', () =>
     }))
     .pipe(dest('dist')));
 
-task('build', parallel('scripts', 'styles', 'views', 'images', 'sw'));
+task('build', parallel('scripts', 'styles', 'views', 'images'));
 
 /* DEFAULT TASK */
 // First, we lint the files. If linting succeeds, we proceed by cleaning the output directory and then making the build

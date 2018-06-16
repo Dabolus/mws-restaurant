@@ -13,9 +13,9 @@ self.putIntoIDB = (objs) =>
       )
   ));
 
-self.addEventListener('install', function (event) {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(staticCacheName).then(function (cache) {
+    caches.open(staticCacheName).then((cache) => {
       return cache.addAll([
         'index.html',
         'restaurant.html',
@@ -35,7 +35,7 @@ self.addEventListener('install', function (event) {
   );
 });
 
-self.addEventListener('activate', function (event) {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
       self.idb.open('restaurant-reviews', 1, upgradeDB => {
