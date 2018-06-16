@@ -22,6 +22,7 @@
     }],
     "valid-jsdoc": "warn",
     "no-restricted-syntax": ["warn", "ForInStatement"],
-    "comma-dangle": ["warn", "always-multiline"]
+    "comma-dangle": ["warn", "always-multiline"],
+    "no-warning-comments": [0]
   }
 }

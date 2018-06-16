@@ -158,7 +158,7 @@ self.createReviewHTML = (review) => {
 
   const date = document.createElement('div');
   date.className = 'date';
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.updatedAt).toLocaleDateString();
   container.appendChild(date);
 
   li.appendChild(container);

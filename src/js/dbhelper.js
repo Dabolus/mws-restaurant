@@ -28,8 +28,12 @@ self.DBHelper = class DBHelper {
    */
   static fetchRestaurantById(id) {
     // fetch all restaurants with proper error handling.
-    return fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
-      .then(res => res.json());
+    return Promise.all([
+      fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`).then(res => res.json()),
+      fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`).then(res => res.json()),
+    ])
+    // TODO: replace Object.assign with object spread as soon as it gets more browsers support
+      .then(([restaurants, reviews]) => Object.assign({}, restaurants, {reviews}));
   }
 
   /**
