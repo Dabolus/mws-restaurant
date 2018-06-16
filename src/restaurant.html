@@ -25,33 +25,30 @@
     <link rel="preconnect" href="http://localhost:1337">
     <link rel="stylesheet" href="css/common.css">
     <title>Restaurant Info</title>
-  </head>
 
+    <script defer src="js/dbhelper.js"></script>
+    <script defer src="js/restaurant_info.js"></script>
+    <script defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpgAn3aaRiyWWjDCZJF9dyac0GVwk5a_w&libraries=places&callback=enableMap"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/solid.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/fontawesome.js"></script>
+  </head>
   <body>
-    <!-- Beginning header -->
     <header>
-      <!-- Beginning nav -->
       <nav id="main-nav">
         <a href="/">
           <img class="logo" src="img/logo.svg" alt="Restaurant Reviews" title="Restaurant Reviews">
         </a>
       </nav>
-      <!-- Beginning breadcrumb -->
       <nav id="breadcrumb-nav">
         <ul id="breadcrumb">
           <li><a href="/">Home</a></li>
         </ul>
       </nav>
-      <!-- End breadcrumb -->
-      <!-- End nav -->
     </header>
-    <!-- End header -->
 
-    <!-- Beginning main -->
     <main id="main-content" class="column-drop">
-      <!-- Beginning info -->
       <section id="info-container">
-        <!-- Beginning restaurant -->
         <section id="restaurant-container">
           <h1 id="restaurant-name"></h1>
           <p id="restaurant-address"></p>
@@ -63,56 +60,36 @@
             <table id="restaurant-hours"></table>
           </div>
         </section>
-        <!-- end restaurant -->
-        <!-- Beginning reviews -->
         <section id="reviews-container">
           <ul id="reviews-list"></ul>
         </section>
-        <!-- End reviews -->
       </section>
-      <!-- End info -->
-      <!-- Beginning map -->
       <section id="map-container">
         <div id="map-overlay">
           <button id="map-enabler" disabled>Show map</button>
         </div>
         <div id="map" role="application"></div>
       </section>
-      <!-- End map -->
     </main>
-    <!-- End main -->
 
-    <!-- Beginning footer -->
     <footer id="footer">
       <span>
-        Copyright (c) 2018 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+        Copyright © 2018 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
       </span>
     </footer>
-    <!-- End footer -->
 
-    <!-- Beginning scripts -->
-    <!-- Database helpers -->
-    <script defer src="js/dbhelper.js"></script>
-    <!-- Main javascript file -->
-    <script defer src="js/restaurant_info.js"></script>
-    <!-- Google Maps -->
-    <script defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpgAn3aaRiyWWjDCZJF9dyac0GVwk5a_w&libraries=places&callback=enableMap"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/solid.js"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/fontawesome.js"></script>
     <!-- See https://developers.google.com/speed/docs/insights/OptimizeCSSDelivery -->
     <noscript id="deferred-styles">
       <link rel="stylesheet" href="css/restaurant.css">
     </noscript>
     <script>
-      const loadDeferredStyles = () => {
+      requestAnimationFrame(() => {
         const addStylesNode = document.getElementById('deferred-styles');
         const replacement = document.createElement('div');
         replacement.innerHTML = addStylesNode.textContent;
         document.body.appendChild(replacement);
         addStylesNode.parentElement.removeChild(addStylesNode);
-      };
-      requestAnimationFrame(loadDeferredStyles);
+      });
     </script>
     <!-- End scripts -->
   </body>
