@@ -23,6 +23,7 @@
     <meta name="theme-color" content="#252831">
 
     <link rel="preconnect" href="http://localhost:1337">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
     <link rel="stylesheet" href="css/common.css">
     <title>Restaurant Reviews</title>
 
@@ -31,8 +32,6 @@
     <script defer src="js/main.js"></script>
     <script defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpgAn3aaRiyWWjDCZJF9dyac0GVwk5a_w&libraries=places&callback=enableMap"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"></script>
   </head>
   <body>
     <header>
@@ -51,7 +50,7 @@
       <section class="filter-section" aria-labelledby="filter-label">
         <button id="map-enabler" hidden>Show map</button>
         <div class="filter-options">
-          <h2 id="filter-label"><i class="fas fa-filter"></i> Filter</h2>
+          <h2 id="filter-label"><i class="material-icons">filter_list</i> Filter</h2>
           <select title="Neighborhoods filter" id="neighborhoods-select" name="neighborhoods"
                   onchange="updateRestaurants()">
             <option value="all" aria-posinset="1">All Neighborhoods</option>
@@ -62,7 +61,8 @@
         </div>
       </section>
       <section id="restaurants-container">
-        <button id="refresh" onclick="updateRestaurants()"><i class="fas fa-sync-alt"></i> Refresh restaurants</button>
+        <button id="refresh" onclick="updateRestaurants()"><i class="material-icons">sync</i> Refresh restaurants
+        </button>
         <ul id="restaurants-list" tabindex="-1"></ul>
       </section>
     </main>
@@ -76,6 +76,7 @@
     <!-- See https://developers.google.com/speed/docs/insights/OptimizeCSSDelivery -->
     <noscript id="deferred-styles">
       <link rel="stylesheet" href="css/main.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     </noscript>
     <script>
       requestAnimationFrame(() => {

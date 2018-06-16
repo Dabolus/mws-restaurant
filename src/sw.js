@@ -1,4 +1,4 @@
-const staticCacheName = 'mws-restaurant-static-v2';
+const staticCacheName = 'mws-restaurant-static-v3';
 
 // Import Jake Archibald's idb promised library
 self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js');
@@ -26,9 +26,7 @@ self.addEventListener('install', (event) => {
         'css/main.css',
         'css/restaurant.css',
         'img/logo.svg',
-        'https://use.fontawesome.com/releases/v5.0.8/js/solid.js',
-        'https://use.fontawesome.com/releases/v5.0.8/js/regular.js',
-        'https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js',
+        'https://fonts.googleapis.com/icon?family=Material+Icons',
         'https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js',
       ]);
     })

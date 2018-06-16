@@ -40,13 +40,31 @@
 }
 
 #refresh {
+  align-items: center;
   background-color: #00821a;
   border-radius: 4px;
   color: #fff;
   cursor: pointer;
+  display: flex;
   float: right;
+  font-size: 12px;
+  justify-content: center;
   margin: 0 15px 15px 15px;
   padding: 8px;
+}
+
+#refresh .material-icons {
+  font-size: 16px;
+}
+
+#filter-label {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+#filter-label .material-icons {
+  font-size: 20px;
 }
 
 .filter-options {
@@ -164,6 +182,25 @@
 #restaurants-list li a:hover, #restaurants-list li a:focus {
   background-color: #9a0007;
   text-decoration: underline;
+}
+
+#restaurants-list .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#restaurants-list .actions > .favorite {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20pt;
+  margin-top: 15px;
+}
+
+#restaurants-list .actions > .favorite[aria-checked="true"] {
+  color: #9a0007;
 }
 
 @media screen and (min-width: 481px) {

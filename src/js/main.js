@@ -200,10 +200,37 @@ self.createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   info.append(address);
 
+  const actions = document.createElement('div');
+  actions.className = 'actions';
+
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = self.DBHelper.urlForRestaurant(restaurant);
-  info.append(more);
+  actions.append(more);
+
+  const favorite = document.createElement('button');
+  favorite.className = 'favorite';
+  favorite.tabIndex = 0;
+  favorite.role = 'checkbox';
+  favorite.setAttribute('aria-checked', (!!restaurant.is_favorite).toString());
+  favorite.label = restaurant.is_favorite ? 'Remove from favorites' : 'Add to favorites';
+
+  const favoriteSymbol = document.createElement('i');
+  favoriteSymbol.className = 'material-icons';
+  favoriteSymbol.textContent = restaurant.is_favorite ? 'favorite' : 'favorite_border';
+  favorite.append(favoriteSymbol);
+
+  favorite.addEventListener('click', () => {
+    // eslint-disable-next-line camelcase
+    restaurant.is_favorite = !restaurant.is_favorite;
+    favorite.setAttribute('aria-checked', restaurant.is_favorite.toString());
+    favorite.label = restaurant.is_favorite ? 'Remove from favorites' : 'Add to favorites';
+    favoriteSymbol.textContent = restaurant.is_favorite ? 'favorite' : 'favorite_border';
+  });
+
+  actions.append(favorite);
+
+  info.append(actions);
 
   li.append(info);
 

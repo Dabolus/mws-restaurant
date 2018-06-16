@@ -151,7 +151,8 @@ self.createReviewHTML = (review) => {
   rating.className = 'rating';
   for (let i = 0; i < 5; i++) {
     const star = document.createElement('i');
-    star.className = `${i < review.rating ? 'fas' : 'far'} fa-star`;
+    star.className = 'material-icons';
+    star.textContent = i < review.rating ? 'star' : 'star_border';
     rating.appendChild(star);
   }
   container.appendChild(rating);
