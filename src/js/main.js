@@ -224,8 +224,15 @@ self.createRestaurantHTML = (restaurant) => {
     // eslint-disable-next-line camelcase
     restaurant.is_favorite = !restaurant.is_favorite;
     favorite.setAttribute('aria-checked', restaurant.is_favorite.toString());
-    favorite.label = restaurant.is_favorite ? 'Remove from favorites' : 'Add to favorites';
-    favoriteSymbol.textContent = restaurant.is_favorite ? 'favorite' : 'favorite_border';
+    if (restaurant.is_favorite) {
+      favorite.label = 'Remove from favorites';
+      favoriteSymbol.textContent = 'favorite';
+      self.DBHelper.favoriteRestaurant(restaurant.id);
+    } else {
+      favorite.label = 'Add to favorites';
+      favoriteSymbol.textContent = 'favorite_border';
+      self.DBHelper.unfavoriteRestaurant(restaurant.id);
+    }
   });
 
   actions.append(favorite);

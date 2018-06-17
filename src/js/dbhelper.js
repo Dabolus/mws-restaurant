@@ -141,4 +141,16 @@ self.DBHelper = class DBHelper {
       animation: self.google.maps.Animation.DROP,
     });
   }
+
+  static favoriteRestaurant(restaurantId) {
+    return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}?is_favorite=true`, {
+      method: 'PUT',
+    }).then(res => res.json());
+  }
+
+  static unfavoriteRestaurant(restaurantId) {
+    return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}?is_favorite=false`, {
+      method: 'PUT',
+    }).then(res => res.json());
+  }
 };
