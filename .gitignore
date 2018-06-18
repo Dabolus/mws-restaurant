@@ -2,3 +2,7 @@
 node_modules/
 dist/
 *.log
+# Ignore Firebase related files
+*firebase*
+*firestore*
+functions/
