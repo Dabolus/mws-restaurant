@@ -1,7 +1,7 @@
 const staticCacheName = 'mws-restaurant-static-v3';
 
 // Import Jake Archibald's idb promised library and our DB helper
-self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js', './dbhelper.js');
+self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js', './js/dbhelper.js');
 
 self.putIntoIDB = (objectStore, objs) =>
   Promise.all((Array.isArray(objs) ? objs : [objs]).map(obj =>
