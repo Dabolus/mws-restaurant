@@ -1,7 +1,7 @@
 const staticCacheName = 'mws-restaurant-static-v3';
 
-// Import Jake Archibald's idb promised library
-self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js');
+// Import Jake Archibald's idb promised library and our DB helper
+self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js', './dbhelper.js');
 
 self.putIntoIDB = (objectStore, objs) =>
   Promise.all((Array.isArray(objs) ? objs : [objs]).map(obj =>
@@ -105,3 +105,62 @@ self.addEventListener('fetch', (event) => {
     );
   }
 });
+
+self.addEventListener('sync', (event) =>
+  event.waitUntil(
+    self.idb.open('restaurant-reviews')
+      .then(db => {
+        const transaction = db.transaction(['restaurants', 'reviews'], 'readwrite');
+        const promises = [];
+        const restaurantsStore = transaction.objectStore('restaurants');
+        const reviewsStore = transaction.objectStore('reviews');
+
+        restaurantsStore.iterateCursor(cursor => {
+          if (!cursor || !cursor.value.needsSync) {
+            return;
+          }
+          const promise = cursor.value.is_favorite ?
+            self.DBHelper.favoriteRestaurant(cursor.value.id) :
+            self.DBHelper.unfavoriteRestaurant(cursor.value.id);
+          promises.push(
+            promise.then(() => restaurantsStore.delete(cursor.value.id))
+          );
+          cursor.continue();
+        });
+        reviewsStore.iterateCursor(cursor => {
+          if (!cursor || !cursor.value.needsSync) {
+            return;
+          }
+          let promise;
+          switch (cursor.value.needsSync) {
+            case 'create':
+              promise = self.DBHelper.addReview(
+                cursor.value.restaurant_id,
+                cursor.value.name,
+                cursor.value.rating,
+                cursor.value.comments
+              );
+              break;
+            case 'update':
+              promise = self.DBHelper.updateReview(
+                cursor.value.id,
+                cursor.value.name,
+                cursor.value.rating,
+                cursor.value.comments
+              );
+              break;
+            case 'delete':
+              promise = self.DBHelper.updateReview(cursor.value.id);
+              break;
+          }
+          if (!promise) {
+            return;
+          }
+          promises.push(
+            promise.then(() => reviewsStore.delete(cursor.value.id))
+          );
+          cursor.continue();
+        });
+        return Promise.all(promises);
+      })
+  ));
