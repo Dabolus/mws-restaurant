@@ -153,4 +153,35 @@ self.DBHelper = class DBHelper {
       method: 'PUT',
     }).then(res => res.json());
   }
+
+  /* eslint-disable camelcase */
+  static addReview(restaurant_id, name, rating, comments) {
+    return fetch(`${DBHelper.DATABASE_URL}/restaurants`, {
+      method: 'POST',
+      body: {
+        restaurant_id,
+        name,
+        rating,
+        comments,
+      },
+    }).then(res => res.json());
+  }
+  /* eslint-enable camelcase */
+
+  static updateReview(reviewId, name, rating, comments) {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews/${reviewId}`, {
+      method: 'PUT',
+      body: {
+        name,
+        rating,
+        comments,
+      },
+    }).then(res => res.json());
+  }
+
+  static deleteReview(reviewId) {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews/${reviewId}`, {
+      method: 'DELETE',
+    }).then(res => res.json());
+  }
 };
