@@ -212,7 +212,14 @@ self.createRestaurantHTML = (restaurant) => {
   favorite.className = 'favorite';
   favorite.tabIndex = 0;
   favorite.role = 'checkbox';
-  favorite.setAttribute('aria-checked', (!!restaurant.is_favorite).toString());
+  // Some restaurants give the 'is_favorite' value as a string, some other give it as undefined.
+  // In this way we unify the way 'is_favorite' is defined
+  // eslint-disable-next-line camelcase
+  restaurant.is_favorite =
+    typeof restaurant.is_favorite === 'string' ?
+      (restaurant.is_favorite === 'true') :
+      !!restaurant.is_favorite;
+  favorite.setAttribute('aria-checked', restaurant.is_favorite.toString());
   favorite.label = restaurant.is_favorite ? 'Remove from favorites' : 'Add to favorites';
 
   const favoriteSymbol = document.createElement('i');

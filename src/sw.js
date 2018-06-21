@@ -3,6 +3,8 @@ const staticCacheName = 'mws-restaurant-static-v3';
 // Import Jake Archibald's idb promised library and our DB helper
 self.importScripts('https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js', './js/dbhelper.js');
 
+const APIURL = new URL((self.DBHelper.DATABASE_URL.startsWith('/') ? self.location.origin : '') + self.DBHelper.DATABASE_URL);
+
 self.putIntoIDB = (objectStore, objs) =>
   Promise.all((Array.isArray(objs) ? objs : [objs]).map(obj =>
     self.idb.open('restaurant-reviews')
@@ -15,8 +17,8 @@ self.putIntoIDB = (objectStore, objs) =>
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(staticCacheName).then((cache) => {
-      return cache.addAll([
+    caches.open(staticCacheName).then((cache) =>
+      cache.addAll([
         'index.html',
         'restaurant.html',
         'js/dbhelper.js',
@@ -29,8 +31,8 @@ self.addEventListener('install', (event) => {
         'https://fonts.googleapis.com/icon?family=Material+Icons',
         'https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js',
         'https://cdn.jsdelivr.net/npm/idb@2.1.1/lib/idb.min.js',
-      ]);
-    })
+      ])
+    )
   );
 });
 
@@ -67,42 +69,127 @@ self.addEventListener('fetch', (event) => {
   // We will just ignore them to avoid showing errors in console.
   if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return Promise.resolve();
 
-  // This part might also be abstracted to handle any request to the API
+  // In this way we are checking if the request is done to our API
   const requestURL = new URL(event.request.url);
-  if (requestURL.pathname.startsWith('/restaurants') || requestURL.pathname.startsWith('/reviews')) {
-    const [, store, id] = /^\/([\w]*)\/?([0-9]*)\/?$/g.exec(requestURL.pathname);
-    event.respondWith(
-      self.idb.open('restaurant-reviews')
-        .then(db => {
-          const objectStore = db
-            .transaction(store)
-            .objectStore(store);
-          return id ? objectStore.get(id) : objectStore.getAll();
-        })
-        .then(idbObjs => {
-          // Even if we already saved the restaurants in idb,
-          // we start a new request so that the restaurants list
-          // can be updated in background. In this way, we will
-          // see the updated restaurants next time we open up
-          // the website
-          const reqPromise = fetch(event.request)
-            .then(res => res.json())
-            .then(reqObjs => {
-              self.putIntoIDB(store, reqObjs);
-              return new Response(JSON.stringify(reqObjs));
-            });
-          if (idbObjs && Object.keys(idbObjs).length > 0) {
-            return new Response(JSON.stringify(idbObjs));
-          }
-          return reqPromise;
-        })
-    );
+  if (requestURL.origin === APIURL.origin && requestURL.pathname.startsWith(APIURL.pathname)) {
+    const [, store, id] = /\/([\w]*)\/?([0-9]*)\/?$/g.exec(requestURL.pathname);
+    switch (event.request.method) {
+      case 'GET':
+        return event.respondWith(
+          self.idb.open('restaurant-reviews')
+            .then(db => {
+              const objectStore = db
+                .transaction(store)
+                .objectStore(store);
+              return id ? objectStore.get(id) : [].slice.call(objectStore.getAll()).filter(o => o.needsSync !== 'delete');
+            })
+            .then(idbObjs => {
+              // Even if we already saved the restaurants in idb,
+              // we start a new request so that the restaurants list
+              // can be updated in background. In this way, we will
+              // see the updated restaurants next time we open up
+              // the website
+              const reqPromise = fetch(event.request)
+                .then(res => res.json())
+                .then(reqObjs => {
+                  self.putIntoIDB(store, reqObjs);
+                  return new Response(JSON.stringify(reqObjs));
+                });
+              if (idbObjs && Object.keys(idbObjs).length > 0) {
+                return new Response(JSON.stringify(idbObjs));
+              }
+              return reqPromise;
+            })
+        );
+      case 'POST':
+        return event.respondWith(
+          store === 'reviews' ? self.putIntoIDB(store, Object.assign({}, event.request.body, {
+            needsSync: 'create',
+          }))
+            .then(() => fetch(event.request))
+            .then(() => self.putIntoIDB(store, Object.assign({}, event.request.body, {
+              needsSync: false,
+            }))) : fetch(event.request)
+        );
+      case 'PUT':
+        return event.respondWith(fetch(event.request));
+        switch (store) {
+          case 'restaurants':
+            return event.respondWith(
+              self.idb.open('restaurant-reviews')
+                .then(db => {
+                  const objStore = db
+                    .transaction(store, 'readwrite')
+                    .objectStore(store);
+                  // eslint-disable-next-line camelcase
+                  const is_favorite = requestURL.search.substr(13) === 'true';
+                  let obj;
+                  objStore.get(id)
+                    .then((o) => {
+                      obj = Object.assign({}, o, {
+                        // eslint-disable-next-line camelcase
+                        is_favorite,
+                        needsSync: true,
+                      });
+                      return objStore.put(obj);
+                    })
+                    .then(() => fetch(event.request))
+                    .then(() => objStore.put(Object.assign({}, obj, {
+                      needsSync: false,
+                    })));
+                })
+            );
+          case 'reviews':
+            return event.respondWith(
+              self.idb.open('restaurant-reviews')
+                .then(db => {
+                  const objStore = db
+                    .transaction(store, 'readwrite')
+                    .objectStore(store);
+                  let obj;
+                  objStore.get(id)
+                    .then((o) => {
+                      obj = Object.assign({}, o, event.request.body, {
+                        needsSync: 'update',
+                      });
+                      return objStore.put(obj);
+                    })
+                    .then(() => fetch(event.request))
+                    .then(() => objStore.put(Object.assign({}, obj, {
+                      needsSync: false,
+                    })));
+                })
+            );
+          default:
+            return event.respondWith(fetch(event.request));
+        }
+      case 'DELETE':
+        return event.respondWith(
+          store === 'reviews' ? self.putIntoIDB(store, {
+            id,
+            needsSync: 'delete',
+          })
+            .then(() => fetch(event.request))
+            .then(() => self.idb.open('restaurant-reviews')
+              .transaction(store, 'readwrite')
+              .objectStore(store)
+              .delete(id)) : fetch(event.request)
+        );
+    }
   } else {
-    event.respondWith(
-      caches.match(event.request).then((response) =>
-        response || fetch(event.request)
-      )
-    );
+    const promise = caches.match(event.request)
+      .then((response) => response || fetch(event.request));
+    if (event.request.url.startsWith('https://fonts.gstatic.com/')) {
+      promise.then((fetchRes) => {
+        const clone = fetchRes.clone();
+        if (!clone) {
+          return;
+        }
+        caches.open(staticCacheName)
+          .then((cache) => cache.put(event.request.url, clone));
+      });
+    }
+    event.respondWith(promise);
   }
 });
 
