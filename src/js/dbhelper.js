@@ -156,14 +156,18 @@ self.DBHelper = class DBHelper {
 
   /* eslint-disable camelcase */
   static addReview(restaurant_id, name, rating, comments) {
-    return fetch(`${DBHelper.DATABASE_URL}/restaurants`, {
+    return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
       method: 'POST',
-      body: {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         restaurant_id,
         name,
         rating,
         comments,
-      },
+      }),
     }).then(res => res.json());
   }
   /* eslint-enable camelcase */
@@ -171,11 +175,15 @@ self.DBHelper = class DBHelper {
   static updateReview(reviewId, name, rating, comments) {
     return fetch(`${DBHelper.DATABASE_URL}/reviews/${reviewId}`, {
       method: 'PUT',
-      body: {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         name,
         rating,
         comments,
-      },
+      }),
     }).then(res => res.json());
   }
 
