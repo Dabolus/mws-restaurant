@@ -81,7 +81,7 @@ self.addEventListener('fetch', (event) => {
               const objectStore = db
                 .transaction(store)
                 .objectStore(store);
-              return id ? objectStore.get(id) : [].slice.call(objectStore.getAll()).filter(o => o.needsSync !== 'delete');
+              return id ? objectStore.get(id) : Array.from(objectStore.getAll()).filter(o => o.needsSync !== 'delete');
             })
             .then(idbObjs => {
               // Even if we already saved the restaurants in idb,
@@ -102,17 +102,30 @@ self.addEventListener('fetch', (event) => {
             })
         );
       case 'POST':
+        let parsedRequestBody;
+        let response;
         return event.respondWith(
-          store === 'reviews' ? self.putIntoIDB(store, Object.assign({}, event.request.body, {
-            needsSync: 'create',
-          }))
+          store === 'reviews' ? event.request.clone().json()
+            .then((json) => parsedRequestBody = json)
+            .then(() => self.idb.open('restaurant-reviews'))
+            .then((db) => db.transaction(store).objectStore(store).openCursor(null, 'prev'))
+            .then(cursor => parsedRequestBody = Object.assign({}, parsedRequestBody, {
+              id: cursor.value.id + 1,
+            }))
+            .then(() => self.putIntoIDB(store, Object.assign({}, parsedRequestBody, {
+              needsSync: 'create',
+            })))
             .then(() => fetch(event.request))
-            .then(() => self.putIntoIDB(store, Object.assign({}, event.request.body, {
+            .then((res) => {
+              response = res.clone();
+              return res.json();
+            })
+            .then((review) => self.putIntoIDB(store, Object.assign({}, parsedRequestBody, review, {
               needsSync: false,
-            }))) : fetch(event.request)
+            })))
+            .then(() => response): fetch(event.request)
         );
       case 'PUT':
-        return event.respondWith(fetch(event.request));
         switch (store) {
           case 'restaurants':
             return event.respondWith(
@@ -179,6 +192,7 @@ self.addEventListener('fetch', (event) => {
   } else {
     const promise = caches.match(event.request)
       .then((response) => response || fetch(event.request));
+    // Dynamically cache any font from Google Font API (we don't know their exact URL)
     if (event.request.url.startsWith('https://fonts.gstatic.com/')) {
       promise.then((fetchRes) => {
         const clone = fetchRes.clone();

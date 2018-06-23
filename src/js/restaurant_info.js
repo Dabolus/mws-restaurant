@@ -17,6 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const ratings = Array.from(newReviewForm.querySelectorAll('[name="new-review-rating"] > .material-icons'));
   let selectedRating;
   const formIsValid = () => !!name.value && !!description.value && !!selectedRating;
+  const resetForm = () => {
+    name.value = '';
+    description.value = '';
+    selectedRating = undefined;
+    ratings.forEach((star) => {
+      star.setAttribute('aria-checked', 'false');
+      star.textContent = 'star_border';
+    });
+    submit.disabled = true;
+  };
 
   name.addEventListener('input', () => submit.disabled = !formIsValid());
   description.addEventListener('input', () => submit.disabled = !formIsValid());
@@ -41,17 +51,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   submit.addEventListener('click', (event) => {
     event.preventDefault();
-    const id = parseInt(self.getParameterByName('id'));
+    const id = parseInt(self.getParameterByName('id'), 10);
     if (!formIsValid() || !id) {
       return false;
     }
-    self.DBHelper.addReview(id, name.value, selectedRating.value, description.value)
+    self.DBHelper.addReview(id, name.value, selectedRating, description.value)
       .then(({updatedAt}) => newReviewLi.parentNode.insertBefore(self.createReviewHTML({
         name: name.value,
-        rating: selectedRating.toString(),
+        rating: selectedRating,
         comments: description.value,
         updatedAt,
-      }), newReviewLi.nextSibling));
+      }), newReviewLi.nextSibling))
+      .then(resetForm);
   });
 });
 
@@ -172,7 +183,7 @@ self.fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review =>
+  reviews.sort((a, b) => new Date(b.updatedAt).valueOf() - new Date(a.updatedAt).valueOf()).forEach(review =>
     ul.appendChild(self.createReviewHTML(review))
   );
   container.appendChild(ul);
