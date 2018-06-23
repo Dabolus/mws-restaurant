@@ -24,6 +24,7 @@
     "no-restricted-syntax": ["warn", "ForInStatement"],
     "comma-dangle": ["warn", "always-multiline"],
     "no-warning-comments": [0],
-    "no-fallthrough": 0
+    "no-fallthrough": 0,
+    "no-case-declarations": 0
   }
 }

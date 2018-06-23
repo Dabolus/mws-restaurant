@@ -60,7 +60,25 @@
           </div>
         </section>
         <section id="reviews-container">
-          <ul id="reviews-list"></ul>
+          <ul id="reviews-list">
+            <li class="new-review">
+              <h4>Write a review</h4>
+              <form>
+                <div class="rating-date-container">
+                  <input name="new-review-name" placeholder="Name" title="Name">
+                  <div class="rating" name="new-review-rating" role="radiogroup" title="Rating">
+                    <i class="material-icons" role="radio" aria-checked="false" title="1" tabindex="0">star_border</i>
+                    <i class="material-icons" role="radio" aria-checked="false" title="2" tabindex="0">star_border</i>
+                    <i class="material-icons" role="radio" aria-checked="false" title="3" tabindex="0">star_border</i>
+                    <i class="material-icons" role="radio" aria-checked="false" title="4" tabindex="0">star_border</i>
+                    <i class="material-icons" role="radio" aria-checked="false" title="5" tabindex="0">star_border</i>
+                  </div>
+                </div>
+                <textarea name="new-review-description" placeholder="Description..." title="Description"></textarea>
+                <button name="new-review-submit" disabled>Submit</button>
+              </form>
+            </li>
+          </ul>
         </section>
       </section>
       <section id="map-container">

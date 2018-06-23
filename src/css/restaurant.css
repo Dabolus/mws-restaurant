@@ -251,6 +251,46 @@
   padding: 8px;
 }
 
+input, textarea {
+  border-radius: 4px;
+  padding: 4px;
+  resize: none;
+}
+
+[name="new-review-rating"] {
+  float: right !important;
+}
+
+[name="new-review-rating"] > .material-icons {
+  cursor: pointer;
+}
+
+.new-review .rating-date-container {
+  padding-top: 12px;
+}
+
+textarea[name="new-review-description"] {
+  height: 5em;
+  width: 100%;
+}
+
+button[name="new-review-submit"] {
+  background-color: #00821a;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  float: right;
+  font-size: 12px;
+  margin-top: 8px;
+  padding: 8px 16px;
+}
+
+button[name="new-review-submit"][disabled] {
+  background-color: #343434;
+  cursor: not-allowed;
+  opacity: .5;
+}
+
 @media screen and (min-width: 721px) {
   #info-container {
     margin-bottom: 0;
@@ -259,6 +299,7 @@
     width: 50%;
     will-change: width, padding;
   }
+
   #map-container {
     height: 100%;
     left: 0;

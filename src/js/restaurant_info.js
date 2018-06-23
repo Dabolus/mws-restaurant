@@ -8,6 +8,51 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   self.fetchRestaurantFromURL()
     .then(() => self.fillBreadcrumb());
+
+  const newReviewLi = document.querySelector('.new-review');
+  const newReviewForm = document.forms[0];
+  const submit = newReviewForm.querySelector('button');
+  const name = newReviewForm.querySelector('[name="new-review-name"]');
+  const description = newReviewForm.querySelector('[name="new-review-description"]');
+  const ratings = Array.from(newReviewForm.querySelectorAll('[name="new-review-rating"] > .material-icons'));
+  let selectedRating;
+  const formIsValid = () => !!name.value && !!description.value && !!selectedRating;
+
+  name.addEventListener('input', () => submit.disabled = !formIsValid());
+  description.addEventListener('input', () => submit.disabled = !formIsValid());
+  ratings.forEach((star) => {
+    const listener = (e) => {
+      if (e.keyCode && e.keyCode !== 32) {
+        return;
+      } else if (e.keyCode === 32) {
+        // Little hack to avoid scrolling to the bottom of the page when pressing space
+        e.preventDefault();
+      }
+      const starPos = ratings.indexOf(star);
+      selectedRating = starPos + 1;
+      for (let i = 0; i < ratings.length; i++) {
+        ratings[i].setAttribute('aria-checked', (i === starPos).toString());
+        ratings[i].textContent = (i <= starPos) ? 'star' : 'star_border';
+      }
+      submit.disabled = !formIsValid();
+    };
+    star.addEventListener('click', listener);
+    star.addEventListener('keydown', listener);
+  });
+  submit.addEventListener('click', (event) => {
+    event.preventDefault();
+    const id = parseInt(self.getParameterByName('id'));
+    if (!formIsValid() || !id) {
+      return false;
+    }
+    self.DBHelper.addReview(id, name.value, selectedRating.value, description.value)
+      .then(({updatedAt}) => newReviewLi.parentNode.insertBefore(self.createReviewHTML({
+        name: name.value,
+        rating: selectedRating.toString(),
+        comments: description.value,
+        updatedAt,
+      }), newReviewLi.nextSibling));
+  });
 });
 
 /**
@@ -127,9 +172,9 @@ self.fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
-    ul.appendChild(self.createReviewHTML(review));
-  });
+  reviews.forEach(review =>
+    ul.appendChild(self.createReviewHTML(review))
+  );
   container.appendChild(ul);
 };
 
