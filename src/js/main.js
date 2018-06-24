@@ -220,7 +220,7 @@ self.createRestaurantHTML = (restaurant) => {
       (restaurant.is_favorite === 'true') :
       !!restaurant.is_favorite;
   favorite.setAttribute('aria-checked', restaurant.is_favorite.toString());
-  favorite.label = restaurant.is_favorite ? 'Remove from favorites' : 'Add to favorites';
+  favorite.title = restaurant.is_favorite ? 'Remove from favorites' : 'Add to favorites';
 
   const favoriteSymbol = document.createElement('i');
   favoriteSymbol.className = 'material-icons';
@@ -232,11 +232,11 @@ self.createRestaurantHTML = (restaurant) => {
     restaurant.is_favorite = !restaurant.is_favorite;
     favorite.setAttribute('aria-checked', restaurant.is_favorite.toString());
     if (restaurant.is_favorite) {
-      favorite.label = 'Remove from favorites';
+      favorite.title = 'Remove from favorites';
       favoriteSymbol.textContent = 'favorite';
       self.DBHelper.favoriteRestaurant(restaurant.id);
     } else {
-      favorite.label = 'Add to favorites';
+      favorite.title = 'Add to favorites';
       favoriteSymbol.textContent = 'favorite_border';
       self.DBHelper.unfavoriteRestaurant(restaurant.id);
     }

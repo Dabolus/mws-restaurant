@@ -257,11 +257,11 @@ input, textarea {
   resize: none;
 }
 
-[name="new-review-rating"] {
+div[name="new-review-rating"] {
   float: right !important;
 }
 
-[name="new-review-rating"] > .material-icons {
+div[name="new-review-rating"] > .material-icons {
   cursor: pointer;
 }
 

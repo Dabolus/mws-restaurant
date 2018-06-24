@@ -16,9 +16,9 @@
 }
 
 #footer {
-  position: fixed;
   bottom: 0;
   left: 0;
+  position: fixed;
 }
 
 /* ====================== Restaurant Filtering ====================== */
@@ -185,8 +185,8 @@
 }
 
 #restaurants-list .actions {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: space-between;
   width: 100%;
 }
