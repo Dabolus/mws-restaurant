@@ -28,7 +28,7 @@ self.fetchNeighborhoods = () => {
       self.neighborhoods = neighborhoods;
       self.fillNeighborhoodsHTML();
     })
-    .catch(console.error);
+    .catch(e => console.info('Unable to fetch neighborhoods: ', e));
 };
 
 /**
@@ -60,7 +60,7 @@ self.fetchCuisines = () => {
       self.cuisines = cuisines;
       self.fillCuisinesHTML();
     })
-    .catch(console.error);
+    .catch(e => console.info('Unable to fetch cuisines: ', e));
 };
 
 /**
@@ -133,7 +133,7 @@ self.updateRestaurants = () => {
       self.fillRestaurantsHTML();
       self.imgsObserver.observe();
     })
-    .catch(console.error);
+    .catch(e => console.info('Unable to fetch restaurants: ', e));
 };
 
 /**

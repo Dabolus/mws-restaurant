@@ -61,7 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
       comments: description.value,
       updatedAt: Date.now(),
     }), newReviewLi.nextSibling);
-    self.DBHelper.addReview(id, name.value, selectedRating, description.value);
+    self.DBHelper.addReview(id, name.value, selectedRating, description.value)
+      .catch(console.info);
     resetForm();
   });
 });
@@ -84,7 +85,7 @@ window.enableMap = () => {
         self.DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
         mapInitialized = true;
       })
-        .catch(console.error);
+        .catch(e => console.info('Unable to fetch restaurant: ', e));
     }
     document.getElementById('map-container').classList.add('shown');
   });
@@ -110,7 +111,7 @@ self.fetchRestaurantFromURL = () => {
       self.fillRestaurantHTML();
       return restaurant;
     })
-    .catch(console.error);
+    .catch(e => console.info('Unable to fetch restaurant: ', e));
 };
 
 /**

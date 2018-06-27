@@ -11,7 +11,7 @@
       "SwitchCase": 1
     }],
     "no-console": ["error", {
-      "allow": ["error"]
+      "allow": ["info"]
     }],
     "require-jsdoc": ["warn", {
       "require": {

@@ -182,7 +182,7 @@ self.DBHelper = class DBHelper {
               // eslint-disable-next-line camelcase
               is_favorite: true,
             }))))
-        .then(Promise.reject));
+        .then(() => Promise.reject(new Error('Unable to sync with the server'))));
   }
 
   static unfavoriteRestaurant(restaurantId) {
@@ -207,7 +207,7 @@ self.DBHelper = class DBHelper {
               // eslint-disable-next-line camelcase
               is_favorite: false,
             }))))
-        .then(Promise.reject));
+        .then(() => Promise.reject(new Error('Unable to sync with the server'))));
   }
 
   /* eslint-disable camelcase */
@@ -257,7 +257,7 @@ self.DBHelper = class DBHelper {
               objectStore: 'reviews',
             }));
         })
-        .then(Promise.reject));
+        .then(() => Promise.reject(new Error('Unable to sync with the server'))));
   }
 
   /* eslint-enable camelcase */

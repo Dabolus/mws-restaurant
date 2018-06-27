@@ -99,7 +99,8 @@ self.addEventListener('fetch', (event) => {
             .then(reqObjs => {
               self.putIntoIDB(store, reqObjs);
               return new Response(JSON.stringify(reqObjs));
-            });
+            })
+            .catch(e => console.info('Unable to fetch: ', e));
           if (idbObjs && Object.keys(Array.isArray(idbObjs) ? idbObjs : [idbObjs]).length > 0) {
             return new Response(JSON.stringify(idbObjs));
           }
