@@ -234,11 +234,17 @@ self.createRestaurantHTML = (restaurant) => {
     if (restaurant.is_favorite) {
       favorite.title = 'Remove from favorites';
       favoriteSymbol.textContent = 'favorite';
-      self.DBHelper.favoriteRestaurant(restaurant.id);
+      self.DBHelper.favoriteRestaurant(restaurant.id)
+        .catch(() => self.DBHelper.enqueueRequest('favoriteRestaurant', {
+          params: [restaurant.id],
+        }));
     } else {
       favorite.title = 'Add to favorites';
       favoriteSymbol.textContent = 'favorite_border';
-      self.DBHelper.unfavoriteRestaurant(restaurant.id);
+      self.DBHelper.unfavoriteRestaurant(restaurant.id)
+        .catch(() => self.DBHelper.enqueueRequest('favoriteRestaurant', {
+          params: [restaurant.id],
+        }));
     }
   });
 

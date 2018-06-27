@@ -55,14 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!formIsValid() || !id) {
       return false;
     }
-    self.DBHelper.addReview(id, name.value, selectedRating, description.value)
-      .then(({updatedAt}) => newReviewLi.parentNode.insertBefore(self.createReviewHTML({
-        name: name.value,
-        rating: selectedRating,
-        comments: description.value,
-        updatedAt,
-      }), newReviewLi.nextSibling))
-      .then(resetForm);
+    newReviewLi.parentNode.insertBefore(self.createReviewHTML({
+      name: name.value,
+      rating: selectedRating,
+      comments: description.value,
+      updatedAt: Date.now(),
+    }), newReviewLi.nextSibling);
+    self.DBHelper.addReview(id, name.value, selectedRating, description.value);
+    resetForm();
   });
 });
 

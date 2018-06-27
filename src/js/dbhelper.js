@@ -1,3 +1,21 @@
+const idbPromise = self.idb.open('restaurant-reviews', 2, upgradeDB => {
+  switch (upgradeDB.oldVersion) {
+    case 0:
+      upgradeDB.createObjectStore('restaurants', {
+        keyPath: 'id',
+      });
+    case 1:
+      upgradeDB.createObjectStore('reviews', {
+        keyPath: 'id',
+      });
+      upgradeDB.createObjectStore('pendingRequests', {
+        keyPath: 'id',
+        autoIncrement: true,
+      });
+  }
+  return upgradeDB;
+});
+
 /**
  * Common database helper functions.
  */
@@ -145,13 +163,51 @@ self.DBHelper = class DBHelper {
   static favoriteRestaurant(restaurantId) {
     return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}?is_favorite=true`, {
       method: 'PUT',
-    }).then(res => res.json());
+    }).then(res => res.json())
+      .then(res => idbPromise
+        .then(db => db
+          .transaction('restaurants', 'readwrite')
+          .objectStore('restaurants')
+          .put(res))
+        .then(() => res))
+      .catch(() => idbPromise
+        .then(db => db
+          .transaction('restaurants')
+          .objectStore('restaurants')
+          .get(restaurantId)
+          .then(restaurant => db
+            .transaction('restaurants', 'readwrite')
+            .objectStore('restaurants')
+            .put(Object.assign({}, restaurant, {
+              // eslint-disable-next-line camelcase
+              is_favorite: true,
+            }))))
+        .then(Promise.reject));
   }
 
   static unfavoriteRestaurant(restaurantId) {
     return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}?is_favorite=false`, {
       method: 'PUT',
-    }).then(res => res.json());
+    }).then(res => res.json())
+      .then(res => idbPromise
+        .then(db => db
+          .transaction('restaurants', 'readwrite')
+          .objectStore('restaurants')
+          .put(res))
+        .then(() => res))
+      .catch(() => idbPromise
+        .then(db => db
+          .transaction('restaurants')
+          .objectStore('restaurants')
+          .get(restaurantId)
+          .then(restaurant => db
+            .transaction('restaurants', 'readwrite')
+            .objectStore('restaurants')
+            .put(Object.assign({}, restaurant, {
+              // eslint-disable-next-line camelcase
+              is_favorite: false,
+            }))))
+        .then(Promise.reject));
   }
 
   /* eslint-disable camelcase */
@@ -168,8 +224,42 @@ self.DBHelper = class DBHelper {
         rating,
         comments,
       }),
-    }).then(res => res.json());
+    }).then(res => res.json())
+      .then(res => idbPromise
+        .then(db => db
+          .transaction('reviews', 'readwrite')
+          .objectStore('reviews')
+          .put(Object.assign({}, res, {
+            restaurant_id,
+            name,
+            rating,
+            comments,
+          })))
+        .then(() => res))
+      .catch(() => idbPromise
+        .then(db => {
+          const tempId = Date.now();
+          return db
+            .transaction('reviews', 'readwrite')
+            .objectStore('reviews')
+            .put({
+              restaurant_id,
+              name,
+              rating,
+              comments,
+              id: tempId,
+              createdAt: tempId,
+              updatedAt: tempId,
+            })
+            .then(() => DBHelper.enqueueRequest('addReview', {
+              params: [restaurant_id, name, rating, comments],
+              tempId,
+              objectStore: 'reviews',
+            }));
+        })
+        .then(Promise.reject));
   }
+
   /* eslint-enable camelcase */
 
   static updateReview(reviewId, name, rating, comments) {
@@ -192,4 +282,34 @@ self.DBHelper = class DBHelper {
       method: 'DELETE',
     }).then(res => res.json());
   }
+
+  static enqueueRequest(method, options) {
+    return idbPromise.then(db => db
+      .transaction('pendingRequests', 'readwrite')
+      .objectStore('pendingRequests')
+      .put({method, options}));
+  }
+
+  static retryRequests() {
+    return idbPromise.then(db => {
+      return db.transaction('pendingRequests').objectStore('pendingRequests').getAll()
+        .then(pendingRequests =>
+          Promise.all(pendingRequests.map(ps =>
+            self.DBHelper[ps.method](...ps.options.params)
+              .then(() => {
+                if (!ps.options.tempId) {
+                  return;
+                }
+                return db
+                  .transaction(ps.options.objectStore, 'readwrite')
+                  .objectStore(ps.options.objectStore)
+                  .delete(ps.options.tempId);
+              })
+              .then(() => db.transaction('pendingRequests', 'readwrite').objectStore('pendingRequests').delete(ps.id))
+              // We don't want every promise to stop just because one gives an error
+              .catch(e => e))));
+    });
+  }
 };
+
+self.addEventListener('online', self.DBHelper.retryRequests);
